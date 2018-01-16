@@ -1,0 +1,61 @@
+<nz-content style="padding: 24px; min-height: 280px;">
+  <div nz-row [nzGutter]="24">
+    <!-- 订单 -->
+    <div nz-col [nzSpan]="16">
+      <div *ngIf="loading">
+        <div *ngFor="let order of orders">
+          <nz-card [nzBordered]="false" [nzNoHovering]="true" *ngIf="order.status === 4">
+            <ng-template #title>
+              <span>订单号: {{order.ordernum}}</span>
+            </ng-template>
+            <ng-template #body>
+              <div class="list-header">
+                <div class="list-title">
+                  <span>{{order.userinfo.name}}</span>
+                </div>
+                <div class="phone">
+                  <a href="tel:{{order.userinfo.tel}}"><i class="anticon anticon-phone"></i> 联系电话: {{order.userinfo.tel}}
+                  </a>
+                </div>
+              </div>
+              <p>下单时间: {{order.create_time}}</p>
+              <p>下单地址: {{order.userinfo.address}}</p>
+              <p *ngIf="order.remarks">
+                <span class="text-warning">备注:</span>{{order.remarks}}
+              </p>
+              <nz-collapseset [nzBordered]="false">
+                <nz-collapse [nzTitle]="'商品'" [nzActive]="true">
+                  <ul>
+                    <li *ngFor="let goods of order.goods">
+                      <div>
+                        <b>{{goods.title}}</b>
+                        <span>{{goods.spec}}</span>
+                        <span style="float: right">数量：x {{goods.count}}</span>
+                      </div>
+                    </li>
+                  </ul>
+                </nz-collapse>
+              </nz-collapseset>
+            </ng-template>
+          </nz-card>
+        </div>
+      </div>
+      <nz-card *ngIf="!loading" [nzBordered]="false" [nzNoHovering]="true">
+        <ng-template #body>
+          暂无订单
+        </ng-template>
+      </nz-card>
+    </div>
+    <div nz-col [nzSpan]="8">
+      <nz-card [nzBordered]="false" [nzNoHovering]="true">
+        <ng-template #title>
+          今日营业总览
+        </ng-template>
+        <ng-template #body>
+          <div>订单量：213</div>
+          <div>营业额： 2130</div>
+        </ng-template>
+      </nz-card>
+    </div>
+  </div>
+</nz-content>

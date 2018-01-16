@@ -1,0 +1,53 @@
+<!--<div class="content__title">-->
+  <!--<h1>Dashboard</h1>-->
+<!--</div>-->
+
+<div nz-row [nzGutter]="24" class="pt-lg ant-row">
+  <div nz-col [nzSpan]="16">
+    <nz-card [nzBordered]="false" [nzNoHovering]="true">
+      <ng-template #title>
+        待处理订单
+      </ng-template>
+      <ng-template #body>
+        <div nz-row [nzGutter]="8">
+          <div nz-col class="gutter-row" [nzSpan]="6">
+            <h1 style="color: #108ee9">{{orders}}</h1>
+            <div class="gutter-box">新订单</div>
+          </div>
+          <div nz-col class="gutter-row" [nzSpan]="6">
+            <h1>0</h1>
+            <div class="gutter-box">异常订单</div>
+          </div>
+          <div nz-col class="gutter-row" [nzSpan]="6">
+            <h1 style="color: #ff5500">0</h1>
+            <div class="gutter-box">催单</div>
+          </div>
+          <div nz-col class="gutter-row" [nzSpan]="6">
+            <h1>0</h1>
+            <div class="gutter-box">退单</div>
+          </div>
+        </div>
+      </ng-template>
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="8">
+    <nz-card [nzBordered]="false" [nzNoHovering]="true">
+      <ng-template #title>
+        待处理反馈
+      </ng-template>
+      <ng-template #body>
+        <p>测试</p>
+      </ng-template>
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="16">
+    <nz-card [nzBordered]="false" [nzNoHovering]="true">
+      <ng-template #title>
+        今日总览
+      </ng-template>
+      <ng-template #body>
+        <p>测试</p>
+      </ng-template>
+    </nz-card>
+  </div>
+</div>

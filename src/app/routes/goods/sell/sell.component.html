@@ -1,0 +1,84 @@
+<div nz-row [nzGutter]="24" class="pt-lg">
+  <div nz-col [nzSpan]="24" style="margin-bottom: 24px">
+    <button nz-button [nzType]="'default'">
+      <nz-popconfirm [nzTitle]="'是否新建门店模板？'" (nzOnConfirm)="confirm()" (nzOnCancel)="cancel()">
+        <a nz-popConfirm>新建门店模板</a>
+      </nz-popconfirm>
+    </button>
+    <button nz-button [nzType]="'default'">
+      <i class="anticon anticon-plus-circle-o"></i>
+      点击预览效果图
+    </button>
+    <nz-alert [nzType]="'info'" [nzMessage]="'温馨提示'"
+    [nzDescription]="'一套门店模板可以入驻多个酒店； 它们之间关系为： 门店模板->分类->商品'" nzShowIcon style="margin-top: 15px">
+    </nz-alert>
+  </div>
+  <div nz-col [nzSpan]="4">
+    <ul nz-menu [nzMode]="'inline'">
+      <li nz-menu-item *ngFor="let t of template"><span><i class="anticon anticon-file"></i><span class="nav-text">门店模板{{t.template}}</span></span></li>
+
+    </ul>
+  </div>
+  <div nz-col [nzSpan]="20">
+    <nz-card [nzBordered]="false" [nzNoHovering]="true" *ngFor="let t of template" id="template{{t.template}}">
+      <ng-template #title>
+        门店模板{{t.template}}
+        <nz-tag [nzColor]="'blue'">测试酒店</nz-tag>
+      </ng-template>
+      <ng-template #extra>
+        <button nz-button [nzType]="'default'" (click)="newChannel(t.template)">
+          <i class="anticon anticon-plus-circle-o"></i>
+          新增分类
+        </button>
+        <button nz-button [nzType]="'danger'" (click)="bandTemplateAPPID(t.temolate)">
+          上线该模板门店
+        </button>
+      </ng-template>
+      <ng-template #body>
+        <div nz-row [nzGutter]="24" *ngFor="let c of t.data">
+          <div nz-col [nzSpan]="24" style="padding-bottom: 15px">
+            <nz-alert [nzType]="'info'"><span alert-body><pre>[{{c.cum}}]{{c.name}}</pre></span></nz-alert>
+          </div>
+          <div nz-col [nzSpan]="24" style="padding-bottom: 15px">
+            <button nz-button [nzType]="'dashed'" (click)="editChannel(t.template,c)">
+              <i class="anticon anticon-plus-circle-o"></i>
+              修改分类
+            </button>
+            <button nz-button [nzType]="'dashed'" (click)="addGoods(c)">
+              <i class="anticon anticon-shop"></i>
+              上架商品
+            </button>
+            <button nz-button [nzType]="'dashed'">
+              <span>删除分类</span>
+            </button>
+          </div>
+          <div nz-col [nzSpan]="8" *ngFor="let good of c.goods">
+            <nz-card [nzNoHovering]="true" class="goods">
+              <ng-template #body>
+                <div class="goods-detail">
+                  <div class="goods-desc">
+                    <div class="goods-title">{{good.info.goods_name}}</div>
+                    <div class="goods-price">￥ {{(good.info.price/100).toFixed(2)}}</div>
+                    <div>
+                      <nz-tag [nzColor]="'red'">{{good.info.tag}}</nz-tag>
+                    </div>
+                    <div>{{good.info.spec}}</div>
+                    <div>{{good.info.description}}</div>
+                  </div>
+                  <div class="goods-img">
+                    <img src="{{good.info.pic}}" alt=""/>
+                  </div>
+                </div>
+                <div class="goods-handle">
+                  <button nz-button [nzType]="'danger'">
+                    <span>移出</span>
+                  </button>
+                </div>
+              </ng-template>
+            </nz-card>
+          </div>
+        </div>
+      </ng-template>
+    </nz-card>
+  </div>
+</div>

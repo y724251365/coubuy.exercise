@@ -1,0 +1,28 @@
+<div>
+    <form nz-form [nzLayout]="'horizontal'" [formGroup]="validateForm">
+        <div nz-form-item nz-row *ngFor="let i of _forname">
+            <div nz-form-label nz-col [nzSm]="6">
+                <label nz-form-item-required>{{i.name}}</label>
+            </div>
+            <div nz-form-control nz-col [nzSm]="14">
+                <nz-input [nzSize]="'large'" formControlName="{{i.id}}" [nzType]="'text'" [nzId]="i.name"
+                [nzPlaceHolder]="i.name" [(ngModel)]="i.value" [nzDisabled]="i.disabled ? i.disabled : 'false'"></nz-input>
+                <nz-select formControlName="{{i.id}}" [nzPlaceHolder]="'请选择商品'" [(ngModel)]="i.value"
+                nzAllowClear *ngIf="i.id === 'goods'">
+                    <nz-option *ngFor="let option of goods"
+                    [nzLabel]="option.label" [nzValue]="option.value"
+                    [nzDisabled]="option.disabled"></nz-option>
+                </nz-select>
+            </div>
+        </div>
+    </form>
+    <div class="ant-modal-footer ng-star-inserted">
+        <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
+            返回
+        </button>
+        <button nz-button [nzType]="'primary'" [nzSize]="'large'" (click)="emitDataOutside($event)"
+        [nzLoading]="isConfirmLoading">
+            保存
+        </button>
+    </div>
+</div>

@@ -1,0 +1,266 @@
+<div nz-row [nzGutter]="24" class="pt-lg">
+  <div nz-col [nzSpan]="24" style="padding-bottom: 24px">
+    <button nz-button [nzType]="'primary'" (click)="showModal()">
+      <i class="anticon anticon-plus-circle">
+        新增商品
+      </i>
+    </button>
+  </div>
+  <div nz-col [nzSpan]="6" *ngIf="!loading">
+    <nz-card [nzBordered]="false" [nzNoHovering]="true" class="goods">
+      <ng-template #body>
+        列表为空
+      </ng-template>
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="6" *ngFor="let good of goods">
+    <nz-card [nzBordered]="false" [nzNoHovering]="true" class="goods">
+      <ng-template #body>
+        <div class="goods-detail">
+          <div class="goods-desc">
+            <div class="goods-title">{{good.goods_name}}</div>
+            <div class="goods-price">￥ {{(good.price/100).toFixed(2)}}</div>
+            <div><nz-tag [nzColor]="'red'">{{good.tag}}</nz-tag></div>
+            <div>{{good.spec}}</div>
+            <div>{{good.description}}</div>
+          </div>
+          <div class="goods-img">
+            <img src="{{good.pic}}" alt="">
+          </div>
+        </div>
+        <div class="goods-handle">
+          <button nz-button [nzType]="'default'" (click)="showEditModal(good)">
+            <span>编辑</span>
+          </button>
+          <button nz-button [nzType]="'danger'">
+            <span>删除</span>
+          </button>
+        </div>
+      </ng-template>
+    </nz-card>
+  </div>
+  <nz-modal [nzVisible]="isVisible" [nzTitle]="'新增商品'" [nzContent]="modalContent" [nzFooter]="modalFooter"
+  (nzOnCancel)="handleCancel($event)" [nzWrapClassName]="'goods-modal'">
+    <ng-template #modalContent>
+      <div nz-row [nzGutter]="24">
+        <div nz-col [nzSpan]="10">
+          <form nz-form [nzLayout]="'horizontal'" [formGroup]="validateForm" (ngSubmit)="handleOk()">
+            <div nz-form-item nz-row>
+              <div nz-form-label nz-col [nzSm]="6">
+                <label nz-form-item-required>商品名称</label>
+              </div>
+              <div nz-form-control nz-col [nzSm]="14">
+                <nz-input [nzSize]="'large'" formControlName="goods_name" [nzType]="'text'" [nzId]="'goods_name'"
+                [nzPlaceHolder]="'商品名称'"></nz-input>
+              </div>
+            </div>
+
+            <div nz-form-item nz-row>
+              <div nz-form-label nz-col [nzSm]="6">
+                <label nz-form-item-required>商品价格</label>
+              </div>
+              <div nz-form-control nz-col [nzSm]="14">
+                <nz-input [nzSize]="'large'" formControlName="price" [nzType]="'text'" [nzId]="'price'"
+                [nzPlaceHolder]="'商品价格'"></nz-input>
+              </div>
+            </div>
+
+            <div nz-form-item nz-row>
+              <div nz-form-label nz-col [nzSm]="6">
+                <label nz-form-item-required>商品名称</label>
+              </div>
+              <div nz-form-control nz-col [nzSm]="14">
+                <nz-input [nzSize]="'large'" formControlName="img" [nzType]="'text'" [nzId]="'img'" [(ngModel)]="imgurl"
+                style="display:none">
+                </nz-input>
+                <input id="file1" accept type="file" ng2FileSelect [uploader]="uploader"
+                (change)="selectedFileOnChanged($event)"/>
+              </div>
+            </div>
+
+            <div nz-form-item nz-row>
+              <div nz-form-label nz-col [nzSm]="6">
+                <label>商品标签</label>
+              </div>
+              <div nz-form-control nz-col [nzSm]="14">
+                <nz-select formControlName="tag" [nzSize]="'large'" [nzPlaceHolder]="'商品标签'">
+                  <nz-option [nzLabel]="'热卖'" [nzValue]="'热卖'"></nz-option>
+                  <nz-option [nzLabel]="'新品'" [nzValue]="'新品'"></nz-option>
+                </nz-select>
+              </div>
+            </div>
+
+            <div nz-form-item nz-row>
+              <div nz-form-label nz-col [nzSm]="6">
+                <label nz-form-item-required>商品描述</label>
+              </div>
+              <div nz-form-control nz-col [nzSm]="14">
+                <nz-input [nzSize]="'large'" formControlName="description" [nzType]="'textarea'" [nzId]="'description'"
+                [nzPlaceHolder]="'商品描述（140字以内）'"></nz-input>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div nz-col [nzSpan]="14">
+          <nz-table #nzTable [nzDataSource]="files" [nzCustomNoResult]="true" [nzIsPagination]="false">
+            <div noResult>请选择上传文件</div>
+            <thead nz-thead>
+              <tr>
+                <th nz-th><span>文件名字</span></th>
+                <th nz-th><span>文件大小</span></th>
+                <th nz-th><span>进度</span></th>
+                <th nz-th><span>状态</span></th>
+                <th nz-th><span>操作</span></th>
+              </tr>
+            </thead>
+            <tbody nz-tbody>
+              <tr nz-tbody-tr *ngFor="let item of nzTable.data">
+                <td nz-td><b>{{item?.file?.name}}</b></td>
+                <td nz-td *ngIf="uploader.options.isHTML5" nowrap>{{item?.file?.size/1024/1024 |number:'.2'}} MB</td>
+                <td nz-td *ngIf="uploader.options.isHTML5">
+                  <nz-progress [ngModel]="item.progress" [nzStrokeWidth]="5"></nz-progress>
+                </td>
+                <td nz-td class="text-center">
+                  <span *ngIf="item.isSuccess"><nz-tag [nzColor]="'green'"></nz-tag></span>
+                  <span *ngIf="item.isCancel" class="mr-md"><nz-tag [nzColor]="'orange'"></nz-tag></span>
+                  <span *ngIf="item.isError"><nz-tag [nzColor]="'red'"></nz-tag></span>
+                </td>
+                <td nz-td nowrap>
+                  <nz-button-group>
+                    <button nz-button (click)="uploadFile()" [nzType]="'primary'"
+                    [disabled]="item.isReady || item.isUploading || item.isSuccess">
+                    <i class="anticon anticon-upload"></i>
+                    </button>
+                    <button nz-button (click)="item.cancel()" [disabled]="!item.isUploading">
+                      <i class="anticon anticon-close"></i>
+                    </button>
+                    <button nz-button (click)="item.remove()">
+                      <i class="anticon anticon-delete"></i>
+                    </button>
+                  </nz-button-group>
+                </td>    
+              </tr>
+            </tbody>
+          </nz-table>
+
+          <nz-card [nzBordered]="false" [nzNoHovering]="true">
+            <ng-template #body>
+              <nz-progress [ngModel]="uploader.progress" [nzStrokeWidth]="5"></nz-progress>
+              <nz-button-group class="mt-md d-block">
+                <button nz-button (click)="uploadFile()" [nzType]="'primary'" [nzLoading]="uploader.isUploading"
+                [disabled]="!uploader.getNotUploadedItems().length">
+                <i class="anticon anticon-upload"></i><span>上传</span>
+                </button>
+                <button nz-button (click)="uploader.cancelAll()" [disabled]="!uploader.isUploading">
+                  <i class="anticon anticon-close"></i><span>取消</span>
+                </button>
+                <button nz-button (click)="uploader.clearQueue()" [disabled]="!uploader.queue.length">
+                  <i class="anticon anticon-delete"></i><span>移除照片</span>
+                </button>
+              </nz-button-group>
+            </ng-template>
+          </nz-card>
+        </div>
+      </div>
+    </ng-template>
+    <ng-template #modalFooter>
+      <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="handleCancel($event)">
+        返回
+      </button>
+      <button nz-button [nzType]="'primary'" [nzSize]="'large'" (click)="handleOk()" [disabled]="!validateForm.valid"
+      [nzLoading]="isConfirmLoading">
+      提交
+      </button>
+    </ng-template>
+  </nz-modal>
+  <!-- 编辑商品 -->
+  <nz-modal [nzVisible]="isVisible_edit" [nzTitle]="'编辑商品'" [nzContent]="modalContent_edit"
+            [nzFooter]="modalFooter_edit" 
+            (nzOnCancel)="editCancel($event)" [nzWrapClassName]="'goods-modal'">
+      <ng-template #modalContent_edit>
+        <div nz-row [nzGutter]="24" *ngIf="good_tmp">
+          <div nz-col [nzSpan]="10">
+            <form nz-form [nzLayout]="'horizontal'" [formGroup]="validateForm_t" (ngSubmit)="handleOk()">
+              <div nz-form-item nz-row>
+                <div nz-form-label nz-col [nzSm]="6">
+                  <label nz-form-item-required>商品名称</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="14">
+                  <nz-input [nzSize]="'large'" formControlName="id_t" [nzType]="'text'" [nzId]="'id_t'"
+                  [nzPlaceHolder]="'商品名称'" [(ngModel)]="good_tmp.id" style="display: none"></nz-input>
+                  <nz-input [nzSize]="'large'" formControlName="goods_name_t" [nzType]="'text'" [nzId]="'goods_name_t'"
+                  [nzPlaceHolder]="'商品名称'" [(ngModel)]="good_tmp.goods_name"></nz-input>
+                </div>
+              </div>
+
+              <div nz-form-item nz-row>
+                <div nz-form-label nz-col [nzSm]="6">
+                  <label nz-form-item-required>商品价格</label>
+                </div>
+                <div nz-form-control nz-col [nzSm]="14">
+                  <nz-input [nzSize]="'large'" formControlName="price_t" [nzType]="'text'" [nzId]="'price_t'"
+                  [nzPlaceHolder]="'商品价格'" [(ngModel)]="good_tmp.price2"></nz-input>
+                </div>
+              </div>
+
+              <!--<div nz-form-item nz-row>-->
+            <!--<div nz-form-label nz-col [nzSm]="6">-->
+            <!--<label nz-form-item-required>商品图片</label>-->
+            <!--</div>-->
+            <!--<div nz-form-control nz-col [nzSm]="14">-->
+            <!--<nz-input [nzSize]="'large'" formControlName="img_t" [nzType]="'text'" [nzId]="'img_t'"-->
+            <!--[(ngModel)]="good_tmp.pic" readonly>-->
+            <!--</nz-input>-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <!--<div nz-form-item nz-row>-->
+            <!--<div nz-form-label nz-col [nzSm]="6">-->
+            <!--<label>预览</label>-->
+            <!--</div>-->
+            <!--<div nz-form-control nz-col [nzSm]="14">-->
+            <!--<img src="{{imgurl}}" width="200"/>-->
+            <!--</div>-->
+            <!--</div>-->
+
+            <div nz-form-item nz-row>
+              <div nz-form-label nz-col [nzSm]="6">
+                <label>商品标签</label>
+              </div>
+              <div nz-form-control nz-col [nzSm]="14">
+                <nz-select formControlName="tag_t" [nzSize]="'large'" [nzPlaceHolder]="'商品标签'"
+                              [(ngModel)]="good_tmp.tag">
+                  <nz-option [nzLabel]="'热卖'" [nzValue]="'热卖'"></nz-option>
+                  <nz-option [nzLabel]="'新品'" [nzValue]="'新品'"></nz-option>
+                </nz-select>
+              </div>
+            </div>
+
+            <div nz-form-item nz-row>
+              <div nz-form-label nz-col [nzSm]="6">
+                <label nz-form-item-required>商品描述</label>
+              </div>
+              <div nz-form-control nz-col [nzSm]="14">
+                <nz-input [nzSize]="'large'" formControlName="description_t" [nzType]="'textarea'"
+                          [nzId]="'description_t'"
+                          [nzPlaceHolder]="'商品描述(140字内)'" [(ngModel)]="good_tmp.description"></nz-input>
+              </div>
+            </div>
+            </form>
+          </div>
+          <div nz-col [nzSpan]="14">
+            <img src="{{good_tmp.pic}}" width="200"/>
+          </div>
+        </div>
+      </ng-template>
+      <ng-template #modalFooter_edit>
+        <button nz-button [nzType]="'default'" [nzSize]="'large'" (click)="editCancel($event)">
+          返 回
+        </button>
+        <button nz-button [nzType]="'primary'" [nzSize]="'large'" (click)="editOk()" [disabled]="!validateForm_t.valid"
+                [nzLoading]="isConfirmLoading">
+          提 交
+        </button>
+      </ng-template>
+  </nz-modal>
+</div>

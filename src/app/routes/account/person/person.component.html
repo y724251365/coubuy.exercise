@@ -1,0 +1,65 @@
+<div nz-row [nzGutter]="24" class="pt-lg">
+  <div nz-col [nzSpan]="24" style="padding-bottom: 24px">
+    <button nz-button [nzType]="'primary'" (click)="newPerson()">
+      <i class="anticon anticon-plus-circle"></i>
+      新增管理员
+    </button>
+    <button nz-button [nzType]="'primary'" (click)="newPerson('dispatcher')">
+      <i class="anticon anticon-plus-circle"></i>
+      新增配送员
+    </button>
+  </div>
+  <div nz-col [nzSpan]="6" style="padding-bottom: 24px;text-align: center">
+    <nz-card [nzBordered]="false" [nzNoHovering]="true" class="goods">
+      <ng-template #body>
+        <img src="assets/img/cbwl.png" width="200px"/>
+        <h3>请先关注钩哒公众号，接收订单通知推送</h3>
+      </ng-template>
+    </nz-card>
+  </div>
+  <div nz-col [nzSpan]="6" *ngIf="!loading">
+    <nz-card [nzBordered]="false" [nzNoHovering]="true" class="goods">
+      <ng-template #body>
+        加载中
+      </ng-template>
+    </nz-card>
+  </div>
+  <div *ngIf="loading">
+    <div nz-col [nzSpan]="6" *ngIf="person.length === 0">
+      <nz-card [nzBordered]="false" [nzNoHovering]="true" class="goods">
+        <ng-template #body>
+          <div class="goods-detail">
+            <div class="goods-desc">
+              <div>请添加人员</div>
+            </div>
+          </div>
+        </ng-template>
+      </nz-card>
+    </div>
+    <div nz-col [nzSpan]="6" *ngFor="let i of person">
+      <nz-card [nzBordered]="false" [nzNoHovering]="true" class="goods">
+        <ng-template #body>
+          <div class="goods-detail">
+            <div class="goods-desc">
+              <div>{{i.openid}}</div>
+              <div>
+                <nz-tag [nzColor]="i.role_type == 'manager' ? '#f50' : '#2db7f5'">{{i.role_type === 'manager' ? '管理员' :
+                  '配送员'}}
+                </nz-tag>
+              </div>
+              <div>更新时间：{{i.update_time}}</div>
+            </div>
+          </div>
+          <!--<div class="goods-handle">-->
+          <!--<button nz-button [nzType]="'default'">-->
+          <!--<span>编辑</span>-->
+          <!--</button>-->
+          <!--<button nz-button [nzType]="'danger'">-->
+          <!--<span>删除</span>-->
+          <!--</button>-->
+          <!--</div>-->
+        </ng-template>
+      </nz-card>
+    </div>
+  </div>
+</div>
